@@ -3,8 +3,11 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <script src="https://aframe.io/releases/0.5.0/aframe.min.js"></script>
 <script src="https://cdn.rawgit.com/donmccurdy/aframe-extras/v1.16.0/dist/aframe-extras.min.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 
 <script>
+var sight = 0;
+
   AFRAME.registerComponent('change-color-on-hover', {
     schema: {
       color: {default: 'red'}
@@ -12,16 +15,21 @@
     init: function () {
       var data = this.data;
       var el = this.el;
+	  
       var defaultColor = el.getAttribute('material').color;
       el.addEventListener('mouseenter', function () {
         el.setAttribute('color', data.color);
+		sight=1;
+		
       });
       el.addEventListener('mouseleave', function () {
         el.setAttribute('color', defaultColor);
+		sight=0;
       });
     }
   });
 
+  console.log(AFRAME.data.score);
   AFRAME.registerComponent('collison-check', {
     schema: {
       el: {
@@ -44,14 +52,18 @@
     tick: function () {
       var el1 = this.el;
       var el2 = this.data.el;
+	  
       var dist = el1.object3D.getWorldPosition().distanceTo(el2.object3D.getWorldPosition());
       var entity = document.querySelector('#score');
+	  
+	  
       if (dist < this.data.radius + this.data.otherRadius) {
         if (!this.data.colliding){
-          this.data.score++;
+          /*
+		  this.data.score++;
           this.data.colliding = true;
           entity.emit('updateScore');
-          AFRAME.utils.entity.setComponentProperty(entity, 'text.value', "score \n" + this.data.score);
+          */
         }
       } else {
         this.data.colliding = false;
@@ -62,6 +74,14 @@
 </head>
 
 <body>
+  <div style='text-align:center;height: 100vh;padding-top:270px;font-size:4em;display:none;top:0px;left:0px;z-index:100;width:100%;background-color:white;position:fixed;color:red' id="whitepano"> 
+  <span id=correct></span>
+  </div>
+  
+  <div style='padding:50px;display:none;top:100px;left:0px;z-index:100;background-color:blue;position:fixed;color:red' id="message">
+  misdsfs
+  </div>
+  
   <a-scene inspector="url: https://aframe.io/releases/0.3.0/aframe-inspector.min.js">
 
     <a-assets>
@@ -86,7 +106,7 @@
       </a-box>
     </a-entity>
 
-    <a-entity id="sign" position="2.5 1 -3.5" rotation="0 -30 0" text="width: 4; align: center; color: black; value: Make the ducks meet">
+    <a-entity id="sign" position="2.5 1 -3.5" rotation="0 -30 0" text="width: 4; align: center; color: black; value: Shoot the ducks!">
       <a-animation attribute="rotation" to="0 -390 0"  easing="linear" dur="2000" begin="mouseenter" > </a-animation>
       <a-box color="#fed6fa" position ="0 0 -0.05" scale="1.8 0.6 0.1"> </a-box>
       <a-box color="#fed6fa" position ="0 -0.7 -0.05" scale="0.1 1 0.1"> </a-box>
@@ -110,9 +130,8 @@
 
     <a-camera position="0 0.2 1.3">
 	<a-cursor></a-cursor>
-	<a-entity position="0.1 0.2 -1" rotation="93.88 0 0" scale="1 1 1" visible="true" material="color: red" geometry="primitive:cylinder;radius:0.03;height:5.1;segmentsHeight:17;thetaLength:359.66;thetaStart:0.02"></a-entity>
-	<a-entity position="0.1 -2.5 -3" rotation="0 0 0" scale="1 1 1" visible="true" material="color: gray;opacity:0.5" geometry="primitive:cylinder;height:5.779999999999999;radius:0.01"></a-entity>
-	</a-camera>
+<!-- 	<a-entity position="0.1 0.2 -1" rotation="93.88 0 0" scale="1 1 1" visible="true" material="color: red" geometry="primitive:cylinder;radius:0.03;height:5.1;segmentsHeight:17;thetaLength:359.66;thetaStart:0.02"></a-entity> -->
+</a-camera>
     
 	
 	<a-sky id="background" src="#skyTexture" theta-length="91" radius="30"></a-sky>
@@ -122,5 +141,32 @@
 	
 	
   </a-scene>
+  
+
+  <script>
+  score = 0;
+
+  document.body.onkeyup = function(e){
+
+		if(e.keyCode == 32){
+			
+			
+			$("#correct").html("miss");
+			if (sight == 1) {
+				$("#correct").html("shoot!!");
+				score++;
+				
+			} else {
+				score--;
+			}
+			console.log(score);
+			AFRAME.utils.entity.setComponentProperty(document.querySelector('#score'), 'text.value', "score \n" + score);
+			//your code
+			//alert("miss");
+			//$("#message").show();
+			$("#whitepano").show().fadeOut(500);
+		}
+	}
+  </script>
 </body>
 </html>
