@@ -1,0 +1,9 @@
+{
+	"name" : "VR ducks",
+	"slug" : "vrducks",
+
+	"index" : "./index.html",
+	"logic" : "./dapp_logic.js",
+
+	"run"   : "./bankroller.js"
+}

@@ -1,0 +1,256 @@
+<!DOCTYPE HTML>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, height=device-height, initial-scale=1.0, user-scalable=no, maximum-scale=1.0"/>
+		<meta name="HandheldFriendly" content="True"/>
+		<title>test</title>
+
+
+		<!-- DCLib https://github.com/DaoCasino/DCLib -->
+		<script src="./lib/DC.js"></script>
+		
+		<!-- our Dapp core logic -->
+		<script src="./dapp_logic.js"></script>
+
+	<script>
+
+	var userinfo;
+
+	DCLib.Account.info(function(i){
+	  userinfo = i;
+	  document.querySelector('#address').innerHTML = userinfo.openkey 
+	  document.querySelector('#user_balance').innerHTML = userinfo.balance.bet 
+	  document.querySelector('#user_balance_eth').innerHTML = userinfo.balance.eth 
+	});
+
+	window.App = new DCLib.DApp({
+	  slug: 'paritytest'
+	})
+
+	function openchannel() {
+	  if (deposit = 1) {
+		if (userinfo.balance.bet>deposit) {
+		  
+		  document.querySelector("#button_start_game").disabled = "true";
+		  document.querySelector("#button_start_game").value = "wait about 1 minute...";
+		  
+		  App.connect({
+			bankroller: "auto",
+			paychannel:{deposit:deposit}
+			
+		  }, function(connected,info) {
+		  
+			if(connected) {
+			  document.querySelector("#button_start_game").display = "none";
+			  document.querySelector("#button1").disabled = false;
+			  document.querySelector("#button2").disabled = false;
+			  document.querySelector("#button3").style.display="block";
+			} else {
+			  console.log("info",info);
+			}
+			
+		  });
+		
+		} else {
+		  alert("You have only "+userinfo.balance.bet+" BET");
+		}
+	  }
+	}
+
+
+	function maketx(n) {
+	  var randomSeed = DCLib.Utils.makeSeed();
+	  App.call('maketx', [n], resultCallback);
+	}
+
+	function resultCallback(result) {
+		console.log(result);
+	  document.querySelector('#result').innerHTML = App.logic.payChannel.getBalance();
+	}
+	</script>
+	Your address (make sure that you have BET and ETH): <span id='address'></span>
+	<br>
+	<b>BET</b>: &nbsp;<span id="user_balance"></span>
+	<b>ETH</b>: &nbsp;<span id="user_balance_eth"></span>
+	<Br><br>
+	<input type='button' id='button_start_game' onclick="openchannel()" value='Open channel'>
+	<input type='button' id='button3' onclick="App.disconnect()" style='display:none' value='Close channel'>
+	<br><br>
+
+	<input type='button' id='button1' onclick="maketx(1)" disabled value='plus'> 
+	<input type='button' id='button2' onclick="maketx(-1)" disabled value='minus'> 
+	<div id='result'></div>
+	
+	
+	
+	<script src="https://aframe.io/releases/0.5.0/aframe.min.js"></script>
+<script src="https://cdn.rawgit.com/donmccurdy/aframe-extras/v1.16.0/dist/aframe-extras.min.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+
+<script>
+var sight = 0;
+
+  AFRAME.registerComponent('change-color-on-hover', {
+    schema: {
+      color: {default: 'red'}
+    },
+    init: function () {
+      var data = this.data;
+      var el = this.el;
+	  
+      var defaultColor = el.getAttribute('material').color;
+      el.addEventListener('mouseenter', function () {
+        el.setAttribute('color', data.color);
+		sight=1;
+		
+      });
+      el.addEventListener('mouseleave', function () {
+        el.setAttribute('color', defaultColor);
+		sight=0;
+      });
+    }
+  });
+
+  console.log(AFRAME.data.score);
+  AFRAME.registerComponent('collison-check', {
+    schema: {
+      el: {
+        type: 'selector'
+      },
+      radius: {
+        default: 0
+      },
+      otherRadius: {
+        default: 0
+      },
+      score:{
+        type: 'int',
+        default: 0
+      },
+      colliding:{
+        default: false
+      }
+    },
+    tick: function () {
+      var el1 = this.el;
+      var el2 = this.data.el;
+	  
+      var dist = el1.object3D.getWorldPosition().distanceTo(el2.object3D.getWorldPosition());
+      var entity = document.querySelector('#score');
+	  
+	  
+      if (dist < this.data.radius + this.data.otherRadius) {
+        if (!this.data.colliding){
+          /*
+		  this.data.score++;
+          this.data.colliding = true;
+          entity.emit('updateScore');
+          */
+        }
+      } else {
+        this.data.colliding = false;
+      }
+    }
+  });
+</script>
+</head>
+
+<body>
+  <div style='text-align:center;height: 100vh;padding-top:270px;font-size:4em;display:none;top:0px;left:0px;z-index:100;width:100%;background-color:white;position:fixed;color:red' id="whitepano"> 
+  <span id=correct></span>
+  </div>
+  
+  <div style='padding:50px;display:none;top:100px;left:0px;z-index:100;background-color:blue;position:fixed;color:red' id="message">
+  misdsfs
+  </div>
+  
+  <a-scene style="display:none" inspector="url: https://aframe.io/releases/0.3.0/aframe-inspector.min.js">
+
+    <a-assets>
+       <img id="skyTexture" src="background.png">
+    </a-assets>
+
+    <a-entity id="duck1" position= "1 0 -3">
+      <a-box color="#fdfd96" scale = "0.1 0.1 .1"> </a-box>
+      <a-animation attribute="rotation" to="0 -360 0" repeat="indefinite" fill="both" easing="linear" dur="30000" > </a-animation>
+      <a-box color="#fdfd96" scale = "0.1 0.1 .1"  position="0 0 1">
+        <a-animation attribute="rotation" to="0 360 0"  easing="linear" dur="4000" begin="mouseenter" > </a-animation>
+        <a-box color="#fdfd96" position="20 0 -10" change-color-on-hover="color: white" scale = "2 3 3" collison-check="el: #otherduck; radius: 0.15; other-radius: 0.15;"> </a-box>
+      </a-box>
+    </a-entity>
+
+    <a-entity id="duck2" position= "-1.2 0 -3.3">
+      <a-box color="#ca96fd" scale = "0.1 0.1 .1"> </a-box>
+      <a-animation attribute="rotation" to="0 360 0" repeat="indefinite" fill="both" easing="linear" dur="40000" > </a-animation>
+      <a-box color="#ca96fd" scale = "0.1 0.1 .1"  position="0 0 1">
+        <a-animation attribute="rotation" to="0 360 0"  easing="linear" fill="both" dur="4000" begin="mouseenter" > </a-animation>
+        <a-box id="otherduck" color="#ca96fd" position="0 0 -15" change-color-on-hover="color: white" scale = "3 3 2"></a-box>
+      </a-box>
+    </a-entity>
+
+    <a-entity id="sign" position="2.5 1 -3.5" rotation="0 -30 0" text="width: 4; align: center; color: black; value: Shoot the ducks!">
+      <a-animation attribute="rotation" to="0 -390 0"  easing="linear" dur="2000" begin="mouseenter" > </a-animation>
+      <a-box color="#fed6fa" position ="0 0 -0.05" scale="1.8 0.6 0.1"> </a-box>
+      <a-box color="#fed6fa" position ="0 -0.7 -0.05" scale="0.1 1 0.1"> </a-box>
+    </a-entity>
+
+    <a-entity id="score" position="-2.5 1 -2" rotation="0 45 0" text="width: 4; align: center; color: black; value: Score \n 000">
+      <a-animation attribute="rotation" to="0 405 0"  easing="linear" fill="both" dur="800" begin="updateScore" > </a-animation>
+      <a-box color="#fed6fa" position ="0 0 -0.05" scale="0.8 0.6 0.1"> </a-box>
+      <a-box color="#fed6fa" position ="0 -0.7 -0.05" scale="0.1 1 0.1"> </a-box>
+    </a-entity>
+
+    <a-plane id="ground" position="0 -0.1 0" rotation="-90 0 0" width="60" height="60" color="#7BC8A4"></a-plane>
+
+    <a-entity id="pond" position ="0 0 -5">
+      <a-ocean scale="1.5 1.2 0.2" material="color: #000000" density="20" opacity="0.8" speed="0.1"></a-ocean>
+      <a-box position = "0 0 -6" scale="15 0.6 1" material="color: #ccccc7"></a-box>
+      <a-box position = "0 0 6" scale="15 0.6 1" material="color: #ccccc7"></a-box>
+      <a-box position = "7.85 -0.16 0" scale="1 0.6 13" rotation= " 0 0 -22" material="color: #ccccc7"></a-box>
+      <a-box position = "-7.85 -0.16 0" scale="1 0.6 13" rotation= " 0 0 22" material="color: #ccccc7"></a-box>
+    </a-entity>
+
+    <a-camera position="0 0.2 1.3">
+	<a-cursor></a-cursor>
+<!-- 	<a-entity position="0.1 0.2 -1" rotation="93.88 0 0" scale="1 1 1" visible="true" material="color: red" geometry="primitive:cylinder;radius:0.03;height:5.1;segmentsHeight:17;thetaLength:359.66;thetaStart:0.02"></a-entity> -->
+</a-camera>
+    
+	
+	<a-sky id="background" src="#skyTexture" theta-length="91" radius="30"></a-sky>
+
+    <a-entity light="type: ambient; color: #FFF; intensity: 0.6"></a-entity>
+    <a-entity light="type: directional; color: #FFF; intensity: 0.8" position="-0.5 5 4"></a-entity>
+	
+	
+  </a-scene>
+  
+
+  <script>
+  score = 0;
+
+  document.body.onkeyup = function(e){
+
+		if(e.keyCode == 32){
+			
+			
+			$("#correct").html("miss");
+			if (sight == 1) {
+				$("#correct").html("shoot!!");
+				score++;
+				
+			} else {
+				score--;
+			}
+			console.log(score);
+			AFRAME.utils.entity.setComponentProperty(document.querySelector('#score'), 'text.value', "score \n" + score);
+			//your code
+			//alert("miss");
+			//$("#message").show();
+			$("#whitepano").show().fadeOut(500);
+		}
+	}
+  </script>
+  
+	</body>
+</html>
