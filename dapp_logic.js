@@ -2,14 +2,15 @@
  * Define our DApp logic constructor, 
  * for use it in frontend and bankroller side
  */
-DCLib.defineDAppLogic('paritytest', function(){
+DCLib.defineDAppLogic('vrducks', function(){
 	const _self = this
 
-	var maketx = function(n){
+	var maketx = function(n,random_hash){
 		// add result to paychannel
-		if (n == 1) _self.payChannel.addTX( 1 )
-		if (n == -1) _self.payChannel.addTX( -1 )	
-		return true;
+		const random_num = DCLib.numFromHash(random_hash, 0, 1);
+		if (random_num == 1) _self.payChannel.addTX( 1 )
+		if (random_num == 0) _self.payChannel.addTX( -1 )	
+		return random_num
 	}
 
 	return {

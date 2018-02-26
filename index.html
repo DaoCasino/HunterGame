@@ -25,14 +25,14 @@
 	});
 
 	window.App = new DCLib.DApp({
-	  slug: 'paritytest'
+	  slug: 'vrducks'
 	})
 
 	function openchannel() {
 	  if (deposit = 1) {
 		if (userinfo.balance.bet>deposit) {
 		  
-		  document.querySelector("#button_start_game").disabled = "true";
+		  document.querySelector("#button_start_game").display = "none";
 		  document.querySelector("#button_start_game").value = "wait about 1 minute...";
 		  
 		  App.connect({
@@ -40,12 +40,21 @@
 			paychannel:{deposit:deposit}
 			
 		  }, function(connected,info) {
-		  
+			console.log("connected",connected);
+			console.log("info",info);
 			if(connected) {
-			  document.querySelector("#button_start_game").display = "none";
+		
+			  document.querySelector("#thegame").display = "block";
+			  document.querySelector("#button_start_game").style.display = "none";
 			  document.querySelector("#button1").disabled = false;
 			  document.querySelector("#button2").disabled = false;
-			  document.querySelector("#button3").style.display="block";
+			  document.querySelector("#thegame").style.display="block";
+			  
+			  AFRAME.utils.entity.setComponentProperty(document.querySelector('#score'), 'text.value', "score \n" + App.logic.payChannel.getBalance());
+			  
+			  
+			 
+			  
 			} else {
 			  console.log("info",info);
 			}
@@ -58,31 +67,26 @@
 	  }
 	}
 
-
-	function maketx(n) {
-	  var randomSeed = DCLib.Utils.makeSeed();
-	  App.call('maketx', [n], resultCallback);
-	}
-
-	function resultCallback(result) {
-		console.log(result);
-	  document.querySelector('#result').innerHTML = App.logic.payChannel.getBalance();
-	}
+	
+	
 	</script>
+	
+	<div style="position:absolute;z-index:200;width: 100%;">
 	Your address (make sure that you have BET and ETH): <span id='address'></span>
 	<br>
 	<b>BET</b>: &nbsp;<span id="user_balance"></span>
 	<b>ETH</b>: &nbsp;<span id="user_balance_eth"></span>
 	<Br><br>
-	<input type='button' id='button_start_game' onclick="openchannel()" value='Open channel'>
-	<input type='button' id='button3' onclick="App.disconnect()" style='display:none' value='Close channel'>
+	<center>
+	<input type='button' id='button_start_game' style="margin:200px;padding:100px;font-size:2em" onclick="openchannel()" value='Start game'>
+	</center>
+	<input type='button' id='button3' onclick="App.disconnect()" style='display:none;' value='Close channel'>
 	<br><br>
 
-	<input type='button' id='button1' onclick="maketx(1)" disabled value='plus'> 
-	<input type='button' id='button2' onclick="maketx(-1)" disabled value='minus'> 
+
 	<div id='result'></div>
 	
-	
+	</div>
 	
 	<script src="https://aframe.io/releases/0.5.0/aframe.min.js"></script>
 <script src="https://cdn.rawgit.com/donmccurdy/aframe-extras/v1.16.0/dist/aframe-extras.min.js"></script>
@@ -112,7 +116,7 @@ var sight = 0;
     }
   });
 
-  console.log(AFRAME.data.score);
+  //console.log(AFRAME.data.score);
   AFRAME.registerComponent('collison-check', {
     schema: {
       el: {
@@ -165,7 +169,7 @@ var sight = 0;
   misdsfs
   </div>
   
-  <a-scene style="display:none" inspector="url: https://aframe.io/releases/0.3.0/aframe-inspector.min.js">
+  <a-scene id=thegame style="display:no33ne" inspector="url: https://aframe.io/releases/0.3.0/aframe-inspector.min.js">
 
     <a-assets>
        <img id="skyTexture" src="background.png">
@@ -225,32 +229,22 @@ var sight = 0;
 	
   </a-scene>
   
-
-  <script>
-  score = 0;
-
-  document.body.onkeyup = function(e){
-
+	<script>
+	
+	 document.body.onkeyup = function(e){
 		if(e.keyCode == 32){
+			$("#correct").html("");
+			$("#whitepano").show();
+			var randomSeed = DCLib.Utils.makeSeed();
 			
-			
-			$("#correct").html("miss");
-			if (sight == 1) {
-				$("#correct").html("shoot!!");
-				score++;
-				
-			} else {
-				score--;
-			}
-			console.log(score);
-			AFRAME.utils.entity.setComponentProperty(document.querySelector('#score'), 'text.value', "score \n" + score);
-			//your code
-			//alert("miss");
-			//$("#message").show();
-			$("#whitepano").show().fadeOut(500);
+			App.call('maketx', [1,'confirm('+randomSeed+')'], function (result) {
+				$("#correct").html(result);
+				AFRAME.utils.entity.setComponentProperty(document.querySelector('#score'), 'text.value', "score \n" + App.logic.payChannel.getBalance());
+				$("#whitepano").show().fadeOut(500);
+			});	
 		}
 	}
-  </script>
+	</script>
   
 	</body>
 </html>
