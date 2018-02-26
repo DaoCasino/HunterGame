@@ -56,7 +56,7 @@ contract VRHuner is oneStepGame {
         checkGameData(_gameData, _bet);
 
         // Game logic
-		_profit = _bet*2;
+	uint _profit = _bet*2
 		
         if (_rnd==1) {
             // player win profit
