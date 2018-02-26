@@ -5,8 +5,10 @@
 ## Install
 
 ```
+git clone https://github.com/DaoCasino/HunterGame
+cd ./HunterGame 
 ```
-
+sdfsdffsdsfd
 ## Usage
 
 ```
