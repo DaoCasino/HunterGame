@@ -2,7 +2,7 @@
 
 > This is an example file with default selections.
 
-## Install
+## Install (for bankrollers)
 
 ```
 1. Download game as zip
@@ -13,7 +13,7 @@
 <img src="http://dl4.joxi.net/drive/2018/02/28/0016/1100/1090636/36/e566e2d2a3.jpg">
 
 
-## Usage
+## Usage (for gamers)
 
 ```
 https://dao.casino/vr and select DuckHunter game
