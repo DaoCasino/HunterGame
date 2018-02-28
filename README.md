@@ -5,14 +5,18 @@
 ## Install
 
 ```
-git clone https://github.com/DaoCasino/HunterGame
-cd ./HunterGame 
+1. Download game as zip
+2. unzip archive to the bankrolls DApps folder
+3. Run bankroll :)
 ```
-sdfsdffsdsfd
+
+<img src="http://dl4.joxi.net/drive/2018/02/28/0016/1100/1090636/36/e566e2d2a3.jpg">
+
+
 ## Usage
 
 ```
-https://dao.casino/vr
+https://dao.casino/vr and select DuckHunter game
 ```
 
 ## Contribute
