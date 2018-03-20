@@ -24,5 +24,3 @@ https://dao.casino/vr and select DuckHunter game
 PRs accepted.
 
 ## License
-
-MIT © Richard McRichface
